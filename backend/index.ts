@@ -15,8 +15,23 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 //Register API routes
-app.use("/api/v1/user", UserRouter);
-app.use("/api/v1/farmer ", FarmerRouter);
+// app.use("/api/v1/user", UserRouter);
+app.post('/user', async (req, res) => {
+  console.olg
+  try {
+    const user = await prisma.user.create({
+      data: req.body,
+    });
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+});
+
+
+ 
+app.use("/api/v1/farmer", FarmerRouter);
 
   // Catch unregistered routes
   app.all("*", (req: Request, res: Response) => {
@@ -29,7 +44,7 @@ app.get('/', async (req: Request, res:Response) => {
     return res.send("Hello world");
   })
 
-const port = process.env.PORT || 8000
+const port = process.env.PORT || 8001
 app.listen(port, () => {
   console.log(`server.js listening on ${port}`)
 })
